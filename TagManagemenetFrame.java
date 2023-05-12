@@ -23,11 +23,11 @@ class TagManagemenetFrame extends JFrame {
 	JTable tagTable;
     DefaultTableModel tagTableModel;
 
-    public TagManagemenetFrame(Map<String, Tag> tagList, ArrayList<Problem> problems, JTable table) {
+    public TagManagemenetFrame(Workbook workBook, JTable mainTable) {
     	setSize(500, 500);
         setLayout(new BorderLayout());
         
-        initTable(tagList);
+        initTable(workBook.getTagList());
 
         inputPanel = new JPanel();
         label = new JLabel("Tag name : ");
@@ -47,14 +47,14 @@ class TagManagemenetFrame extends JFrame {
                 String tagName = textField.getText();
                 if(tagName.equals("")) {
                 	JOptionPane.showMessageDialog(null, "Empty names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
-                }else if(tagList.containsKey(tagName)){
+                }else if(workBook.getTagList().containsKey(tagName)){
                 	JOptionPane.showMessageDialog(null, "Duplicate names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
                 }else if(tagName.contains(" ")){
                 	JOptionPane.showMessageDialog(null, "Cannot contain spaces", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
                 	textField.setText("");
                 }else {
                 	Tag newTag = new Tag(tagName);
-                    tagList.put(newTag.getName(), newTag);
+                	workBook.getTagList().put(newTag.getName(), newTag);
                     tagTableModel.addRow(new Object[]{newTag.getName(), newTag.getNum()});
                     textField.setText("");
                 }
@@ -68,16 +68,16 @@ class TagManagemenetFrame extends JFrame {
                 int selectedRow = tagTable.convertRowIndexToModel(tagTable.getSelectedRow());
                 if (selectedRow != -1) {
                 	String value = tagTable.getModel().getValueAt(selectedRow, 0).toString();
-                	int problemNum = tagList.get(value).getNum();
+                	int problemNum = workBook.getTagList().get(value).getNum();
             		int result = JOptionPane.showConfirmDialog(null, "There are " + problemNum + " problems with this tag are you sure to delete it?", "CONFIRM", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);;
             		if(result == 0) {
-            			for(int i = 0; i < problems.size(); i++) {
-                			if(problems.get(i).deleteTag(value)) {
-                				DefaultTableModel model = (DefaultTableModel) table.getModel();
-                				model.setValueAt(problems.get(i).getTagtoString(), i, 1);
+            			for(int i = 0; i < workBook.getProblemList().size(); i++) {
+                			if(workBook.getProblemList().get(i).deleteTag(value)) {
+                				DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
+                				model.setValueAt(workBook.getProblemList().get(i).getTagtoString(), i, 1);
                 			}
                 		}
-                        tagList.remove(value);
+            			workBook.getTagList().remove(value);
                         tagTableModel.removeRow(selectedRow);
             		}
                 }else {

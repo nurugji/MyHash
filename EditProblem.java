@@ -24,53 +24,56 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
-class MakeProblemPanel extends JFrame {
+class EditProblem extends JFrame {
 	private JPanel fileLoadPanel, tagPanel;
 	private JLabel titleLb, filelocLb, imgIcon, solveLb, memoLb, tagLb;
-	private JButton loadImgBtn, addBtn;
+	private JButton loadImgBtn, saveBtn;
     private JTextField titleTf, filelocTf, solveTf, memoTf;
     
     private Set<String> checkList = new HashSet<String>();
     
-    public MakeProblemPanel(Workbook workBook, JTable mainTable) {
+    int selectedRow;
+    Problem selectedProblem;
+
+    public EditProblem(Workbook workBook, JTable mainTable){
     	
     	setSize(1000, 1000);
-        setLayout(new GridLayout(6, 1));
-        
-        //title
+    	setLayout(new GridLayout(6, 1));
+    	
+    	selectedRow = mainTable.getSelectedRow();
+    	selectedProblem = workBook.getProblemList().get(selectedRow);
+    	
+    	if(!selectedProblem.getTag().isEmpty()) {
+        	for(String str : selectedProblem.getTag()) {
+        		checkList.add(str);
+        	}
+    	}
+    	
         titleLb = new JLabel("Title:");
-        titleTf = new JTextField();
+        titleTf = new JTextField(selectedProblem.getTitle());
 
-        //File load
         fileLoadPanel = new JPanel();
         filelocLb = new JLabel("File location:");
         loadImgBtn = new JButton("Load image");
-        filelocTf = new JTextField();
+        filelocTf = new JTextField(selectedProblem.getFileloc());
         filelocTf.setEditable(false);
         imgIcon = new JLabel();
-        
-        //solve
+        initImg(mainTable);
+
         solveLb = new JLabel("Solve:");
-        solveTf = new JTextField();
-
-        //memo
+        solveTf = new JTextField(selectedProblem.getSolve());
         memoLb = new JLabel("Memo:");
-        memoTf = new JTextField();
-
-        //tag
+        memoTf = new JTextField(selectedProblem.getMemo());
         tagLb = new JLabel("Tag:");
         tagPanel = new JPanel();
-        
-        addBtn = new JButton("Add Problem");
-        
+        saveBtn = new JButton();
         initTag(workBook);
         
         fileLoadPanel.add(filelocLb);
         fileLoadPanel.add(loadImgBtn);
         fileLoadPanel.add(filelocTf);
-        
+
         add(titleLb);
         add(titleTf);
         add(fileLoadPanel);
@@ -81,74 +84,79 @@ class MakeProblemPanel extends JFrame {
         add(memoTf);
         add(tagLb);
         add(tagPanel);
-        add(addBtn);
+        add(saveBtn);
         
         loadImgBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+     	   public void actionPerformed(ActionEvent e) {
      	        String selectedFile = ImageHelper.loadImg();
      	        if(selectedFile != null) {
      	        	ImageIcon icon = ImageHelper.makeImgIcon(selectedFile);
      	        	imgIcon.setIcon(icon);
      	        	filelocTf.setText(selectedFile);
      	        }
+     	    }
+        });
+
+        saveBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//data change
+				selectedProblem.setTitle(titleTf.getText());
+				selectedProblem.setFileloc(filelocTf.getText());
+				selectedProblem.setSolve(solveTf.getText());
+				selectedProblem.setMemo(memoTf.getText());
+		    	selectedProblem.setTag(checkList);
+		    	
+		    	//table change
+		    	mainTable.getModel().setValueAt(selectedProblem.getTitle(), selectedRow, 0);
+		    	mainTable.getModel().setValueAt(selectedProblem.getTagtoString(), selectedRow, 1);
+		    	mainTable.getModel().setValueAt(selectedProblem.getFileloc(), selectedRow, 3);
 			}
         });
         
-        addBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				//add check empty field
-				
-				//add problem to workbook
-				String title = titleTf.getText();
-				String solve = solveTf.getText();
-				String memo = memoTf.getText();
-				String fileloc = filelocTf.getText();
-				Problem newProblem = new Problem(title, fileloc, solve, memo, checkList);
-				
-				for(String tagName : checkList) {
-					workBook.getTagList().get(tagName).increaseN();
-				}
-				workBook.addProblem(newProblem);
-				
-				//add problem to table
-				Object[] row = {newProblem.getTitle(), newProblem.getTagtoString(), newProblem.getPercent(), newProblem.getFileloc()};
-				DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
-				model.addRow(row);
-				
-				JOptionPane.showMessageDialog(null, "MESSAGE : Added successfully", "Sucess", JOptionPane.INFORMATION_MESSAGE);
-				
-				//init field
-				titleTf.setText("");
-				solveTf.setText("");
-				memoTf.setText("");
-				filelocTf.setText("");
-				imgIcon.setIcon(null);
-			}
-        });
+
     }
+    public void initImg(JTable mainTable) {
+        ImageIcon icon = ImageHelper.makeImgIcon(selectedProblem.getFileloc());
+        if(icon == null) {
+            filelocTf.setText("");
+            selectedProblem.setFileloc("");
+            
+            mainTable.getModel().setValueAt(selectedProblem.getFileloc(), selectedRow, 2);
+        }
+        imgIcon.setIcon(icon);
+    }
+    
     public void initTag(Workbook workBook) {
         ArrayList<String> temp = new ArrayList<String>(workBook.getTagList().keySet());
         temp.sort(new StrCmp());
-        
+
         for(String tagName : temp) {
         	JCheckBox box = new JCheckBox(tagName);
         	box.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-	          		if(e.getStateChange() == ItemEvent.SELECTED) {
-            			JCheckBox checkbox = (JCheckBox) e.getSource();
-            			checkList.add(checkbox.getText());
-            		}
-            		else {
-            			JCheckBox checkbox = (JCheckBox) e.getSource();
-            			checkList.remove(checkbox.getText());
-            		}						
+					if(e.getStateChange() == ItemEvent.SELECTED) {
+						JCheckBox checkbox = (JCheckBox) e.getSource();
+						if(!checkList.contains(checkbox.getText())) {
+							checkList.add(checkbox.getText());
+							workBook.getTagList().get(checkbox.getText()).increaseN();
+						}
+					    
+					}
+					else {
+						JCheckBox checkbox = (JCheckBox) e.getSource();
+						checkList.remove(checkbox.getText());
+						workBook.getTagList().get(checkbox.getText()).decreaseN();
+					}					
 				}
+        		
         	});
+        	if(checkList.contains(tagName)) {
+        		box.setSelected(true);
+        	}
         	tagPanel.add(box);
         }
     }
 }
+

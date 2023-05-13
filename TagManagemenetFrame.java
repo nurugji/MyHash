@@ -40,7 +40,6 @@ class TagManagemenetFrame extends JFrame {
         inputPanel.add(addButton);
         inputPanel.add(deleteButton);
         
-        //make tag
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,7 +60,6 @@ class TagManagemenetFrame extends JFrame {
             }
         });
 
-        //delete tag
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,8 +71,7 @@ class TagManagemenetFrame extends JFrame {
             		if(result == 0) {
             			for(int i = 0; i < workBook.getProblemList().size(); i++) {
                 			if(workBook.getProblemList().get(i).deleteTag(value)) {
-                				DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
-                				model.setValueAt(workBook.getProblemList().get(i).getTagtoString(), i, 1);
+                				mainTable.getModel().setValueAt(workBook.getProblemList().get(i).getTagtoString(), i, 1);
                 			}
                 		}
             			workBook.getTagList().remove(value);
@@ -90,11 +87,9 @@ class TagManagemenetFrame extends JFrame {
         add(new JScrollPane(tagTable), BorderLayout.CENTER);
     }
     public void initTable(Map<String, Tag> tagList) {
-        // JTable을 사용한 태그 목록 표시
         tagTableModel = new DefaultTableModel(new Object[]{"태그 이름", "문제 개수"}, 0);
         tagTable = new JTable(tagTableModel);
         
-        // 기존 tag 표시
         if(!tagList.isEmpty()) {
         	for(String tagName : tagList.keySet()) {
         		tagTableModel.addRow(new Object[] {tagName, tagList.get(tagName).getNum()});

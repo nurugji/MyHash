@@ -1,11 +1,8 @@
 package com.myhash.object;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
 import java.util.Date;
 
 public class History {
-	final static SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM/dd");
 	
 	boolean correct;
 	Date date;
@@ -47,7 +44,7 @@ public class History {
 		this.memo = memo;
 	}
 	public String getDate() {
-		return simpleDate.format(date);
+		return Now.date.format(date);
 	}
 	public void setDate(Date date) {
 		this.date = date;
@@ -55,8 +52,8 @@ public class History {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\'" + correct + "\' ");
-		sb.append("\'" + simpleDate.format(date) + "\' ");
-		sb.append("\'" + memo + "\' ");
+		sb.append("\'" + Now.date.format(date) + "\' ");
+		sb.append("\'" + memo + "\'");
 		return sb.toString();
 	}
 }

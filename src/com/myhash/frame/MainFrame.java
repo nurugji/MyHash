@@ -1,4 +1,5 @@
 package com.myhash.frame;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,17 +8,16 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 import com.myhash.object.Database;
 import com.myhash.object.Filter;
@@ -36,7 +36,7 @@ class MainFrame extends JFrame{
 	public JTable mainTable;
 	private JPanel managementPanel, toolPanel;
 	private JButton addBtn, editBtn, deleteBtn, initBtn,  tagBtn, detailBtn, filterBtn, saveBtn;
-	JTextField searchTf;
+	JTextField searchTf, numTf;
 	JScrollPane tablePane;
 	Workbook selectedWorkbook;
 	
@@ -67,6 +67,8 @@ class MainFrame extends JFrame{
         detailBtn = new JButton("Deatil");
         filterBtn = new JButton("Filter");
         saveBtn = new JButton("Save");
+        JLabel num = new JLabel("num");
+        numTf = new JTextField(5);
         
         managementPanel.add(addBtn);
         managementPanel.add(editBtn);
@@ -78,6 +80,8 @@ class MainFrame extends JFrame{
         toolPanel.add(initBtn);
         toolPanel.add(filterBtn);
         toolPanel.add(saveBtn);
+        toolPanel.add(num);
+        toolPanel.add(numTf);
 
         frame.add(toolPanel, BorderLayout.NORTH);
         frame.add(tablePane, BorderLayout.CENTER);
@@ -86,8 +90,7 @@ class MainFrame extends JFrame{
         addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	JFrame addProblemFrame = new AddProblemFrame(selectedWorkbook, mainTable);
-            	addProblemFrame.setVisible(true);
+            	new AddProblemFrame(selectedWorkbook, mainTable);
             }
         });
         
@@ -146,7 +149,7 @@ class MainFrame extends JFrame{
         filterBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFrame filterFrame = new FilterFrame(selectedWorkbook.getTagList(), mainTable);
+				JFrame filterFrame = new FilterFrame(selectedWorkbook.getTagList(), mainTable, numTf);
 				filterFrame.setVisible(true);
 			}
         });
@@ -174,6 +177,8 @@ class MainFrame extends JFrame{
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				Filter.tableFilter(searchTf.getText(), mainTable);
+		        Integer rowCount = mainTable.getRowCount(); 
+		        numTf.setText(rowCount.toString());
 				
 			}
 
@@ -181,12 +186,16 @@ class MainFrame extends JFrame{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				Filter.tableFilter(searchTf.getText(), mainTable);
+				Integer rowCount = mainTable.getRowCount(); 
+		        numTf.setText(rowCount.toString());
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
 				Filter.tableFilter(searchTf.getText(), mainTable);
+				Integer rowCount = mainTable.getRowCount(); 
+		        numTf.setText(rowCount.toString());
 			}
         });
         frame.addWindowListener(new WindowAdapter() {
@@ -202,15 +211,6 @@ class MainFrame extends JFrame{
             }
         });
 
-    }
-    
-    public void show() {
-    	for(Problem problem : selectedWorkbook.getProblemList()) {
-    		System.out.printf("title : %s, tag : %s, tileloc : %s, solve : %s, memo : %s history %s\n", problem.getTitle(), problem.getTag(), problem.getFileloc(), problem.getSolve(), problem.getMemo(), problem.getHistory().toString());
-    	}
-    	for(String tagName : selectedWorkbook.getTagList().keySet()) {
-    		System.out.printf("tag : %s / %d\n", tagName, selectedWorkbook.getTagList().get(tagName).getNum());
-    	}
     }
     
     public void initTable() {

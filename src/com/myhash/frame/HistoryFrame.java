@@ -1,8 +1,8 @@
 package com.myhash.frame;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -59,7 +59,6 @@ public class HistoryFrame extends JFrame{
 		        boolean correct = correctBtn.isSelected() ? true : false;
 		        History newHistory = new History(correct, memoTf.getText());
 		        selectedProblem.addHistory(newHistory);
-		        System.out.println(newHistory);
 		        
 		        //add history to table
 		        Object[] row = {newHistory.getCorrecttoString(), newHistory.getDate().toString(), newHistory.getMemo()};

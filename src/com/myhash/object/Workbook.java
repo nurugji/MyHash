@@ -48,6 +48,9 @@ public class Workbook {
 	public int getTagNum() {
 		return this.tagList.size();
 	}
+	public String path() {
+		return getName() + "/";
+	}
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getName()+",");

@@ -41,8 +41,9 @@ public class Problem {
 	
 	public String getTagtoString() {
 		ArrayList<String> temp = new ArrayList<String>(tag);
-		temp.sort(new StrCmp());
+		temp.sort(new Sort.TagCmp());
 		StringBuilder sb = new StringBuilder();
+		if(temp.isEmpty()) return "";
 		for(String tagName : temp) {
 			sb.append(tagName);
 			sb.append(" ");
@@ -56,7 +57,6 @@ public class Problem {
 		for(History history : historyList) {
 			sb.append(history.toString() + "#");
 		}
-
 		return sb.toString();
 	}
 	
@@ -66,6 +66,7 @@ public class Problem {
 	
 	public static Set<String> stringtoTag(String checkList) {
 		Set<String> tagList = new HashSet<String>();
+		if(checkList.equals("")) return tagList;
 		String[] temp = checkList.split(" ");
 		for(String tagName : temp) {
 			tagList.add(tagName);
@@ -96,8 +97,12 @@ public class Problem {
 		return this.tag;
 	}
 	
-	public boolean deleteTag(String value) {
-		return this.tag.remove(value);
+	public boolean deleteTag(String name) {
+		return this.tag.remove(name);
+	}
+	
+	public boolean addTag(String name) {
+		return this.tag.add(name);
 	}
 
 	public String getTitle() {
@@ -161,7 +166,6 @@ public class Problem {
 		sb.append("\"" + getMemo() + "\",");
 		sb.append("\"" + getTagtoString() + "\",");
 		sb.append("\"" + getHistorytoString() + "\",");
-		System.out.println("history : " + getHistorytoString());
 		return sb.toString();
 	}
 }

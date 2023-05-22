@@ -1,11 +1,17 @@
 package com.myhash.frame;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,12 +27,14 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import com.myhash.object.UserClipboard;
 import com.myhash.object.ImageHelper;
 import com.myhash.object.Problem;
-import com.myhash.object.StrCmp;
+import com.myhash.object.Sort;
+import com.myhash.object.UserFolder;
 import com.myhash.object.Workbook;
 
-class AddProblemFrame extends JFrame {
+class AddProblemFrame implements ClipboardOwner{
 	private JPanel fileLoadPanel, tagPanel;
 	private JLabel titleLb, filelocLb, imgIcon, solveLb, memoLb, tagLb;
 	private JButton loadImgBtn, addBtn;
@@ -36,8 +44,10 @@ class AddProblemFrame extends JFrame {
     
     public AddProblemFrame(Workbook workBook, JTable mainTable) {
     	
-    	setSize(1000, 800);
-        setLayout(new BorderLayout());
+    	JFrame frame = new JFrame("Add problem view");
+    	
+    	frame.setSize(1000, 800);
+        frame.setLayout(new BorderLayout());
         
         //title
         titleLb = new JLabel("Title:");
@@ -99,13 +109,13 @@ class AddProblemFrame extends JFrame {
         center.add(right);
         
 
-        add(center, BorderLayout.CENTER);
-        add(addBtn, BorderLayout.NORTH);
+        frame.add(center, BorderLayout.CENTER);
+        frame.add(addBtn, BorderLayout.NORTH);
 
         loadImgBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-     	        String selectedFile = ImageHelper.loadImg();
+     	        String selectedFile = UserFolder.loadImg();
      	        if(selectedFile != null) {
      	        	ImageIcon icon = ImageHelper.makeImgIcon(selectedFile, 500);
      	        	imgIcon.setIcon(icon);
@@ -150,10 +160,31 @@ class AddProblemFrame extends JFrame {
 				}
 			}
         });
+	  	System.out.println("world");
+	  	
+        frame.addKeyListener(new KeyAdapter() {
+	      @Override
+	      public void keyPressed(KeyEvent e) {
+	          if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_V) {
+	              // 컨트롤 + V 눌렀을 때 클립보드에서 이미지 가져오기
+	        	  int result = JOptionPane.showConfirmDialog(null, "Do you want to use the image on the clipboard?", "Confirm", JOptionPane.OK_CANCEL_OPTION);
+	        	  if(result == 0) {
+		          		String path = UserClipboard.clipboardSaveAsImgFile();
+		          		ImageIcon icon = ImageHelper.makeImgIcon(path, 500);
+		          		imgIcon.setIcon(icon);
+		          		filelocTf.setText(path);
+	        	  }
+	          }
+	             
+	      	}
+        });
+
+        frame.setFocusable(true);
+        frame.setVisible(true);
     }
+    
     public void initTag(Workbook workBook) {
-        ArrayList<String> temp = new ArrayList<String>(workBook.getTagList().keySet());
-        temp.sort(new StrCmp());
+        ArrayList<String> temp = Sort.tagSort(workBook.getTagList().keySet());
         
         for(String tagName : temp) {
         	JCheckBox box = new JCheckBox(tagName);
@@ -172,5 +203,10 @@ class AddProblemFrame extends JFrame {
         	});
         	tagPanel.add(box);
         }
+    }
+    @Override
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+    	// TODO Auto-generated method stub
+	
     }
 }

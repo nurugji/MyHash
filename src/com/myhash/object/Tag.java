@@ -22,6 +22,10 @@ public class Tag {
     	return num;
     }
     
+    public void setNum(int num) {
+    	this.num = num;
+    }
+    
     public void increaseN() {
     	this.num++;
     }

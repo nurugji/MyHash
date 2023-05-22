@@ -1,4 +1,5 @@
 package com.myhash.object;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -11,24 +12,24 @@ public class Filter {
 	
 	public static String createRegularExpression(Set<String> selectTagtoSort) {
 		StringBuilder sb = new StringBuilder();
-		ArrayList<String> temp = new ArrayList<String>(selectTagtoSort);
-		temp.sort(new StrCmp());
+		ArrayList<String> temp = Sort.tagSort(selectTagtoSort);
 		for(String tagName : temp) {
 			sb.append(".*" + tagName + ".*");
 		}
 		return sb.toString();
 	}
 	
-    public static void tableFilter(String query, JTable mainTable) {
+    public static int tableFilter(String query, JTable mainTable) {
     	TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>((DefaultTableModel) mainTable.getModel());
     	mainTable.setRowSorter(tr);
     	
     	tr.setRowFilter(RowFilter.regexFilter(query));
+    	return mainTable.getRowCount();
     }
     
-    //add string comparator 
     public static void sortTable(JTable table) {
  		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) table.getModel());
+ 		sorter.setComparator(0, new Sort.TitleCmp());
  		table.setRowSorter(sorter); 
      }
 }

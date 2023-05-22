@@ -1,4 +1,5 @@
 package com.myhash.frame;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -22,7 +23,8 @@ import javax.swing.JTextField;
 
 import com.myhash.object.ImageHelper;
 import com.myhash.object.Problem;
-import com.myhash.object.StrCmp;
+import com.myhash.object.Sort;
+import com.myhash.object.UserFolder;
 import com.myhash.object.Workbook;
 
 class EditProblemFrame extends JFrame {
@@ -50,6 +52,7 @@ class EditProblemFrame extends JFrame {
         	}
     	}
     	
+    	
         titleLb = new JLabel("Title:");
         titleTf = new JTextField(selectedProblem.getTitle());
 
@@ -68,6 +71,7 @@ class EditProblemFrame extends JFrame {
         tagLb = new JLabel("Tag:");
         tagPanel = new JPanel();
         saveBtn = new JButton("save problem");
+
         initTag(workBook);
         
         fileLoadPanel.add(filelocLb);
@@ -107,7 +111,7 @@ class EditProblemFrame extends JFrame {
         
         loadImgBtn.addActionListener(new ActionListener() {
      	   public void actionPerformed(ActionEvent e) {
-     	        String selectedFile = ImageHelper.loadImg();
+     	        String selectedFile = UserFolder.loadImg();
      	        if(selectedFile != null) {
      	        	ImageIcon icon = ImageHelper.makeImgIcon(selectedFile, 600);
      	        	imgIcon.setIcon(icon);
@@ -115,7 +119,7 @@ class EditProblemFrame extends JFrame {
      	        }
      	    }
         });
-
+        
         saveBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -155,9 +159,8 @@ class EditProblemFrame extends JFrame {
     }
     
     public void initTag(Workbook workBook) {
-        ArrayList<String> temp = new ArrayList<String>(workBook.getTagList().keySet());
-        temp.sort(new StrCmp());
-
+    	ArrayList<String> temp = Sort.tagSort(workBook.getTagList().keySet());
+    	
         for(String tagName : temp) {
         	JCheckBox box = new JCheckBox(tagName);
         	box.addItemListener(new ItemListener() {
@@ -171,11 +174,12 @@ class EditProblemFrame extends JFrame {
 						}
 					    
 					}
-					else {
+					else if((e.getStateChange() == ItemEvent.DESELECTED)) {
 						JCheckBox checkbox = (JCheckBox) e.getSource();
 						checkList.remove(checkbox.getText());
 						workBook.getTagList().get(checkbox.getText()).decreaseN();
 					}					
+					
 				}
         		
         	});

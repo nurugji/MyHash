@@ -1,4 +1,5 @@
 package com.myhash.frame;
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -160,8 +161,8 @@ class WorkbookFrame extends JFrame{
         
         if(!workbookList.isEmpty()) {
         	for(Workbook workbook : workbookList) {
-        		ArrayList<Problem> loadProblem = Database.loadProblemList(workbook.getName()+"Problem.txt");
-        		Map<String, Tag> loadTag = Database.loadTagList(workbook.getName()+"Tag.txt");
+        		ArrayList<Problem> loadProblem = Database.loadProblemList(workbook.getName());
+        		Map<String, Tag> loadTag = Database.loadTagList(workbook.getName());
         		workbook.setProblemList(loadProblem);
         		workbook.setTagList(loadTag);
         		workbookModel.addRow(new Object[] {workbook.getName(), String.valueOf(workbook.getProblemNum()), String.valueOf(workbook.getTagNum())});

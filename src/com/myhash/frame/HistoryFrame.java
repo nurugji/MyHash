@@ -1,5 +1,6 @@
 package com.myhash.frame;
 
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +21,7 @@ import com.myhash.object.Workbook;
 
 //add Maximum historyNum = 5
 public class HistoryFrame extends JFrame{
-	private JPanel inputPanel;
+	private JPanel inputP;
 	private JButton addBtn, deleteBtn;
 	private JRadioButton correctBtn, incorrectBtn;
 	private JTextField memoTf;
@@ -39,7 +40,7 @@ public class HistoryFrame extends JFrame{
 		selectedRow = mainTable.convertRowIndexToModel(mainTable.getSelectedRow());
 		selectedProblem = workBook.getProblemList().get(selectedRow);
 		
-		inputPanel = new JPanel();
+		inputP = new JPanel();
 		memoTf = new JTextField(10);
 		correctBtn = new JRadioButton("correct");
 		correctBtn.setSelected(true);
@@ -84,12 +85,12 @@ public class HistoryFrame extends JFrame{
 			
 		});
 		
-		inputPanel.add(memoTf);
-		inputPanel.add(correctBtn);
-		inputPanel.add(incorrectBtn);
-		inputPanel.add(addBtn);
-		inputPanel.add(deleteBtn);
-		add(inputPanel, BorderLayout.NORTH);
+		inputP.add(memoTf);
+		inputP.add(correctBtn);
+		inputP.add(incorrectBtn);
+		inputP.add(addBtn);
+		inputP.add(deleteBtn);
+		add(inputP, BorderLayout.NORTH);
 		add(tablePane, BorderLayout.CENTER);
 	}
 	

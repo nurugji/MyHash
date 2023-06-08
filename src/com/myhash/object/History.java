@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 import java.util.Date;
 
 public class History {

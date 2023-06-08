@@ -1,5 +1,6 @@
 package com.myhash.frame;
 
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,10 +36,12 @@ class MainFrame extends JFrame{
 	public DefaultTableModel mainModel;
 	public JTable mainTable;
 	private JPanel managementPanel, toolPanel;
+	private JLabel numL;
 	private JButton addBtn, editBtn, deleteBtn, initBtn,  tagBtn, detailBtn, filterBtn, saveBtn;
-	JTextField searchTf, numTf;
-	JScrollPane tablePane;
-	Workbook selectedWorkbook;
+	private JTextField searchTf, numTf;
+	private JScrollPane tablePane;
+	private Workbook selectedWorkbook;
+	private JFrame frame;
 	
 	int selectedRow;
 	
@@ -46,7 +49,7 @@ class MainFrame extends JFrame{
     	selectedRow = workbookTable.getSelectedRow();
     	selectedWorkbook = workbookList.get(selectedRow);
     	
-    	JFrame frame =  new JFrame("Problem list");
+    	frame =  new JFrame("Problem list");
     	
     	frame.setSize(1000, 1000);
     	frame.setLayout(new BorderLayout());
@@ -67,7 +70,7 @@ class MainFrame extends JFrame{
         detailBtn = new JButton("Deatil");
         filterBtn = new JButton("Filter");
         saveBtn = new JButton("Save");
-        JLabel num = new JLabel("num");
+        numL = new JLabel("num");
         numTf = new JTextField(5);
         
         managementPanel.add(addBtn);
@@ -80,7 +83,7 @@ class MainFrame extends JFrame{
         toolPanel.add(initBtn);
         toolPanel.add(filterBtn);
         toolPanel.add(saveBtn);
-        toolPanel.add(num);
+        toolPanel.add(numL);
         toolPanel.add(numTf);
 
         frame.add(toolPanel, BorderLayout.NORTH);
@@ -157,8 +160,8 @@ class MainFrame extends JFrame{
         saveBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Database.saveProblemList(selectedWorkbook.getProblemList(), selectedWorkbook.getName());
-				Database.saveTagList(selectedWorkbook.getTagList(), selectedWorkbook.getName());
+				Database.saveProblemList(selectedWorkbook.getProblemList(), selectedWorkbook.path());
+				Database.saveTagList(selectedWorkbook.getTagList(), selectedWorkbook.path());
 			}
         });
         
@@ -167,6 +170,10 @@ class MainFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Filter.tableFilter("", mainTable);
+				Integer rowCount = mainTable.getRowCount(); 
+		        numTf.setText(rowCount.toString());
+		        searchTf.setText("");
+		        
 			}
         	
         });
@@ -228,7 +235,7 @@ class MainFrame extends JFrame{
 			Object[] row = {problem.getTitle(), problem.getTagtoString(), problem.getPercent(), problem.getFileloc()};
 			mainModel.addRow(row);
 		}
-        Filter.sortTable(mainTable);
+        Filter.sortMainTable(mainTable);
     }
 }
 

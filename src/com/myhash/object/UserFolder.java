@@ -1,4 +1,5 @@
 package com.myhash.object;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,12 +11,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class UserFolder {
-	private final static String loadPath = "database/source/";
+	private final static String loadPath = "/database/source/";
 	
     //return relative path
     public static String loadImg(){
-     	 JFileChooser fileChooser = new JFileChooser();// 파일 탐색기 출력
-     	 fileChooser.setCurrentDirectory(new File(loadPath));
+     	 JFileChooser fileChooser = new JFileChooser();
+     	 String currentDirectory = System.getProperty("user.dir");
+     	
+     	 fileChooser.setCurrentDirectory(new File(currentDirectory+loadPath));
           int result = fileChooser.showOpenDialog(fileChooser);
           if (result == JFileChooser.APPROVE_OPTION) {
               File selectedFile = fileChooser.getSelectedFile();
@@ -34,7 +37,7 @@ public class UserFolder {
         String basePath = System.getProperty("user.dir");
         String absolutePath = file.getAbsolutePath();
         
-        // 기본 작업 디렉토리 기준으로 상대 경로 계산
+        // absolute path calc
         String relativePath = new File(basePath).toURI().relativize(new File(absolutePath).toURI()).getPath();
         
         return relativePath;

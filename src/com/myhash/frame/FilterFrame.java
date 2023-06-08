@@ -1,5 +1,6 @@
 package com.myhash.frame;
 
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,15 +21,17 @@ import com.myhash.object.Filter;
 import com.myhash.object.Tag;
 
 public class FilterFrame extends JFrame{
-	Set<String> selectTagtoSort = new HashSet<String>();
+	private JButton saveBtn;
+	private JPanel selectP;
+	private Set<String> selectTagtoSort = new HashSet<String>();
 	
 	public FilterFrame(Map<String, Tag> tagList, JTable mainTable, JTextField numTf) {
 		setTitle("Select tag to filtering");
 		setLayout(new BorderLayout());
 		setSize(500, 500);
 		
-		JButton save = new JButton("save");
-		save.addActionListener(new ActionListener() {
+		saveBtn = new JButton("save");
+		saveBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Integer problemNum = Filter.tableFilter(Filter.createRegularExpression(selectTagtoSort), mainTable);
@@ -36,7 +39,7 @@ public class FilterFrame extends JFrame{
 			}
 		});
 		
-		JPanel selectPanel = new JPanel();
+		selectP = new JPanel();
         for(String tagName : tagList.keySet()) {
         	JCheckBox checkbox = new JCheckBox(tagName);
         	checkbox.addItemListener(new ItemListener(){
@@ -49,10 +52,10 @@ public class FilterFrame extends JFrame{
 				}
         		
         	});
-        	selectPanel.add(checkbox);
+        	selectP.add(checkbox);
         }
         
-        add(selectPanel, BorderLayout.CENTER);
-        add(save, BorderLayout.NORTH);
+        add(selectP, BorderLayout.CENTER);
+        add(saveBtn, BorderLayout.NORTH);
 	}
 }

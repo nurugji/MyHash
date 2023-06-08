@@ -1,5 +1,6 @@
 package com.myhash.frame;
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -28,7 +29,7 @@ import com.myhash.object.UserFolder;
 import com.myhash.object.Workbook;
 
 class EditProblemFrame extends JFrame {
-	private JPanel fileLoadPanel, tagPanel;
+	private JPanel fileLoadP, tagP, topP, bottomP, leftP, rightP, centerP;
 	private JLabel titleLb, filelocLb, imgIcon, solveLb, memoLb, tagLb;
 	private JButton loadImgBtn, saveBtn;
     private JTextField titleTf, filelocTf, solveTf, memoTf;
@@ -56,7 +57,7 @@ class EditProblemFrame extends JFrame {
         titleLb = new JLabel("Title:");
         titleTf = new JTextField(selectedProblem.getTitle());
 
-        fileLoadPanel = new JPanel();
+        fileLoadP = new JPanel();
         filelocLb = new JLabel("File location:");
         loadImgBtn = new JButton("Load image");
         filelocTf = new JTextField(selectedProblem.getFileloc());
@@ -69,44 +70,43 @@ class EditProblemFrame extends JFrame {
         memoLb = new JLabel("Memo:");
         memoTf = new JTextField(selectedProblem.getMemo());
         tagLb = new JLabel("Tag:");
-        tagPanel = new JPanel();
+        tagP = new JPanel();
         saveBtn = new JButton("save problem");
 
         initTag(workBook);
         
-        fileLoadPanel.add(filelocLb);
-        fileLoadPanel.add(loadImgBtn);
-        fileLoadPanel.add(filelocTf);
+        fileLoadP.add(filelocLb);
+        fileLoadP.add(loadImgBtn);
+        fileLoadP.add(filelocTf);
         
-        JPanel top = new JPanel(new GridLayout(3, 2));
-        top.setPreferredSize(new Dimension(400, 400));
-        JPanel bottom = new JPanel(new BorderLayout());
-        bottom.setPreferredSize(new Dimension(400, 400));
-        JPanel right = new JPanel();
+        topP = new JPanel(new GridLayout(3, 2));
+        topP.setPreferredSize(new Dimension(400, 400));
+        bottomP = new JPanel(new BorderLayout());
+        bottomP.setPreferredSize(new Dimension(400, 400));
+        rightP = new JPanel();
+        leftP = new JPanel();
+      
+        topP.add(titleLb);
+        topP.add(titleTf);
+        topP.add(solveLb);
+        topP.add(solveTf);
+        topP.add(memoLb);
+        topP.add(memoTf);
+        bottomP.add(tagLb, BorderLayout.NORTH);
+        bottomP.add(tagP, BorderLayout.CENTER);
         
-        JPanel left = new JPanel();
-        
-        top.add(titleLb);
-        top.add(titleTf);
-        top.add(solveLb);
-        top.add(solveTf);
-        top.add(memoLb);
-        top.add(memoTf);
-        bottom.add(tagLb, BorderLayout.NORTH);
-        bottom.add(tagPanel, BorderLayout.CENTER);
-        
-        left.add(top);
-        left.add(bottom);
+        leftP.add(topP);
+        leftP.add(bottomP);
 
-        right.add(fileLoadPanel);
-        right.add(imgIcon);
+        rightP.add(fileLoadP);
+        rightP.add(imgIcon);
         
-        JPanel center = new JPanel(new GridLayout(0,2));
-        center.add(left);
-        center.add(right);
+        centerP = new JPanel(new GridLayout(0,2));
+        centerP.add(leftP);
+        centerP.add(rightP);
         
 
-        add(center, BorderLayout.CENTER);
+        add(centerP, BorderLayout.CENTER);
         add(saveBtn, BorderLayout.NORTH);
         
         loadImgBtn.addActionListener(new ActionListener() {
@@ -186,7 +186,7 @@ class EditProblemFrame extends JFrame {
         	if(checkList.contains(tagName)) {
         		box.setSelected(true);
         	}
-        	tagPanel.add(box);
+        	tagP.add(box);
         }
     }
 }

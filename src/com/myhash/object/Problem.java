@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,7 +54,6 @@ public class Problem {
 	
 	public String getHistorytoString() {
 		StringBuilder sb = new StringBuilder();
-
 		for(History history : historyList) {
 			sb.append(history.toString() + "#");
 		}
@@ -82,7 +82,7 @@ public class Problem {
 			try {
 				String[] temp = element.split(" ");
 				Boolean correct = Boolean.valueOf(temp[0].replace("\'", ""));
-				Date date = simpleDate.parse(temp[1].replace("\'", ""));
+				Date date = Now.date.parse(temp[1].replace("\'", ""));
 				String memo = temp[2].replace("\'", "");
 				history = new History(correct, date, memo);
 			}catch(ParseException e) {

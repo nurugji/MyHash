@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,15 +31,16 @@ public class Database {
 		}catch(IOException e) {
         	JOptionPane.showMessageDialog(null, "Unable to create file", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
 		}
-		
 	}
 
-	public static void makeFile(String filename){
-		File problemFile = new File(directoryPath+filename+"/Problem.txt");
-        File tagFile = new File(directoryPath+filename+"/Tag.txt");
+	public static void makeFile(String workbookPath){
+		String path = directoryPath + workbookPath;
+    	File directory = new File(path);
+    	directory.mkdirs();
+
         try {
-            FileWriter fw1 = new FileWriter(problemFile);
-            FileWriter fw2 = new FileWriter(tagFile);
+            FileWriter fw1 = new FileWriter(directory+"/Problem.txt");
+            FileWriter fw2 = new FileWriter(directory+"/Tag.txt");
 
             fw1.write("");
             fw1.close();
@@ -46,13 +48,15 @@ public class Database {
             fw2.write("");
             fw2.close();
         }catch(IOException e) {
+        	e.printStackTrace();
         	JOptionPane.showMessageDialog(null, "Unable to create file", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
         }
 	}
 	
-	public static void removeFile(String filename) {
-		Path problemPath = Paths.get(directoryPath+filename + "Problem.txt");
-		Path tagPath = Paths.get(directoryPath+filename + "Tag.txt");
+	public static void removeFile(String workbookPath) {
+		String path = directoryPath + workbookPath;
+		Path problemPath = Paths.get(path + "Problem.txt");
+		Path tagPath = Paths.get(path + "Tag.txt");
         try {
             Files.delete(problemPath);
             Files.delete(tagPath);
@@ -67,7 +71,7 @@ public class Database {
 	public static ArrayList<Workbook> loadWorkbookList() {
 		ArrayList<Workbook> loadWorkbookList = new ArrayList<Workbook>();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(directoryPath+"/bookcase.txt"));
+			BufferedReader reader = new BufferedReader(new FileReader(directoryPath+"bookcase.txt"));
 			String line;
 			while((line = reader.readLine()) != null) {
 				Workbook newWorkbook = new Workbook(line);
@@ -80,11 +84,12 @@ public class Database {
 		return loadWorkbookList;
 	}
 	
-	public static ArrayList<Problem> loadProblemList(String filename) {
-	   	String path = directoryPath + filename;
+	public static ArrayList<Problem> loadProblemList(String workbookPath) {
+
+	   	String path = directoryPath + workbookPath;
 		ArrayList<Problem> loadProblems = new ArrayList<Problem>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path + "/Problem.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(path + "Problem.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -102,17 +107,18 @@ public class Database {
             }
             reader.close();
         } catch (IOException e) {
+        	e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Could not find the file to load", "LOAD ERROR", JOptionPane.ERROR_MESSAGE);
         }
         return loadProblems;
     }
     
-    public static Map<String, Tag> loadTagList(String filename) {
-    	String path = directoryPath + filename;
+    public static Map<String, Tag> loadTagList(String workbookPath) {
+    	String path = directoryPath + workbookPath;
     	
         Map<String, Tag> loadTagList = new HashMap<String, Tag>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(path+"/Tag.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(path+ "Tag.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ");
@@ -131,7 +137,7 @@ public class Database {
     public static void saveWorkbookList(ArrayList<Workbook> workbookList) {
     	
    		try {
-   	       File file = new File(directoryPath + "/bookcase.txt");
+   	       File file = new File(directoryPath + "/bookcase.txt"); //?
            FileWriter writer = new FileWriter(file);
 
       		for(Workbook workbook : workbookList) {
@@ -144,9 +150,9 @@ public class Database {
 		}
     }
 
-    public static void saveTagList(Map<String, Tag> tagList, String filename) {
+    public static void saveTagList(Map<String, Tag> tagList, String workbookPath) {
     	
-    	String path = directoryPath + filename;
+    	String path = directoryPath + workbookPath;
     	File directory = new File(path);
         
     	try {
@@ -154,7 +160,7 @@ public class Database {
             	directory.mkdirs();
             }
             
-    		File file = new File(path+"/Tag.txt");
+    		File file = new File(path+"Tag.txt");
     		FileWriter writer = new FileWriter(file);
     		
     		for(String tagName : tagList.keySet()) {
@@ -166,15 +172,15 @@ public class Database {
     	}
     }
     
-    public static void saveProblemList(ArrayList<Problem> problemList, String filename) {
+    public static void saveProblemList(ArrayList<Problem> problemList, String workbookPath) {
     	
-    	String path = directoryPath + filename;
+    	String path = directoryPath + workbookPath;
     	File directory = new File(path);
         try {
             if (!directory.exists()) {
             	directory.mkdirs();
             }
-        	File file = new File(path+"/Problem.txt");
+        	File file = new File(path+"Problem.txt");
         	FileWriter writer = new FileWriter(file);
         	
         	for(Problem problem : problemList) {

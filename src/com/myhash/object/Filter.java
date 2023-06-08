@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -27,7 +28,13 @@ public class Filter {
     	return mainTable.getRowCount();
     }
     
-    public static void sortTable(JTable table) {
+    public static void sortTagTable(JTable table) {
+ 		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) table.getModel());
+ 		table.setRowSorter(sorter); 
+
+    }
+    
+    public static void sortMainTable(JTable table) {
  		TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) table.getModel());
  		sorter.setComparator(0, new Sort.TitleCmp());
  		table.setRowSorter(sorter); 

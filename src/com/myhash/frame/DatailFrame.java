@@ -18,10 +18,10 @@ import com.myhash.object.Problem;
 import com.myhash.object.Workbook;
 
 public class DatailFrame extends JFrame {
-	JPanel infoPanel;
-	JButton solveBtn, memoBtn, historyBtn;
-	JLabel imgIcon;
-	JScrollPane imgPanel;
+	private JPanel infoP;
+	private JButton solveBtn, memoBtn, historyBtn;
+	private JLabel imgIcon;
+	private JScrollPane imgP;
 	
 	int selectedRow;
 	Problem selectedProblem;
@@ -33,21 +33,21 @@ public class DatailFrame extends JFrame {
     	setSize(1000, 1000);
 		setLayout(new BorderLayout());
 		
-		infoPanel = new JPanel();
+		infoP = new JPanel();
 		solveBtn = new JButton("show solve");
 		memoBtn = new JButton("show memo");
 		historyBtn = new JButton("history management");
 		imgIcon = new JLabel();
 		
-		imgPanel = new JScrollPane(imgIcon);
+		imgP = new JScrollPane(imgIcon);
 		initImg(mainTable);
 		
-		infoPanel.add(solveBtn);
-		infoPanel.add(memoBtn);
-		infoPanel.add(historyBtn);
+		infoP.add(solveBtn);
+		infoP.add(memoBtn);
+		infoP.add(historyBtn);
 		
-		add(imgPanel, BorderLayout.CENTER);
-		add(infoPanel, BorderLayout.NORTH);
+		add(imgP, BorderLayout.CENTER);
+		add(infoP, BorderLayout.NORTH);
 		
 		historyBtn.addActionListener(new ActionListener() {
 			@Override

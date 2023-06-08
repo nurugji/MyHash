@@ -1,5 +1,6 @@
 package com.myhash.frame;
 
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,10 +26,10 @@ import com.myhash.object.Tag;
 import com.myhash.object.Workbook;
 
 class WorkbookFrame extends JFrame{
-	JPanel inputPanel;
-	JLabel label;
-	JTextField textField;
-	JButton addButton, deleteButton, loadBtn, saveBtn;
+	JPanel inputP;
+	JLabel nameL;
+	JTextField nameTf;
+	JButton addBtn, deleteBtn, loadBtn, saveBtn;
 	JTable workbookTable;
     DefaultTableModel workbookModel;
     Bookcase bookcase;
@@ -38,27 +39,26 @@ class WorkbookFrame extends JFrame{
     	frame.setSize(800, 500);
         frame.setLayout(new BorderLayout());
         
-        
         setSize(800, 500);
         setLayout(new BorderLayout());
         this.bookcase = bookcase;
         
         initTable(bookcase.getWorkbookList());
 
-        inputPanel = new JPanel();
-        label = new JLabel("workbook name : ");
-        textField = new JTextField(10);
-        addButton = new JButton("ADD");
-        deleteButton = new JButton("DELETE");
+        inputP = new JPanel();
+        nameL = new JLabel("workbook name : ");
+        nameTf = new JTextField(10);
+        addBtn = new JButton("ADD");
+        deleteBtn = new JButton("DELETE");
         loadBtn = new JButton("load");
         saveBtn = new JButton("save");
         
-        inputPanel.add(label);
-        inputPanel.add(textField);
-        inputPanel.add(addButton);
-        inputPanel.add(deleteButton);
-        inputPanel.add(loadBtn);
-        inputPanel.add(saveBtn);
+        inputP.add(nameL);
+        inputP.add(nameTf);
+        inputP.add(addBtn);
+        inputP.add(deleteBtn);
+        inputP.add(loadBtn);
+        inputP.add(saveBtn);
         saveBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -68,33 +68,33 @@ class WorkbookFrame extends JFrame{
         	
         });
         
-        addButton.addActionListener(new ActionListener() {
+        addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String workbookName = textField.getText();
+                String workbookName = nameTf.getText();
                 if(workbookName.equals("")) {
                 	JOptionPane.showMessageDialog(null, "Empty names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
                 }else if(bookcase.getWorkbookList().contains(workbookName)){
                 	JOptionPane.showMessageDialog(null, "Duplicate names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
                 }else if(workbookName.contains(" ")){
                 	JOptionPane.showMessageDialog(null, "Cannot contain spaces", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
-                	textField.setText("");
+                	nameTf.setText("");
                 }else {
                 	//add workbook to bookcase
                 	Workbook newWorkbook = new Workbook(workbookName);
                 	bookcase.addWorkbook(newWorkbook);
                 	
                 	//add workbook to database
-                	Database.makeFile(workbookName);
+                	Database.makeFile(newWorkbook.path());
                     
                     //add workbook to table
                 	workbookModel.addRow(new Object[]{newWorkbook.getName(), String.valueOf(newWorkbook.getProblemNum()), String.valueOf(newWorkbook.getTagNum())});
-                    textField.setText("");
+                    nameTf.setText("");
                 }
             }
         });
 
-        deleteButton.addActionListener(new ActionListener() {
+        deleteBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = workbookTable.convertRowIndexToModel(workbookTable.getSelectedRow());
@@ -110,7 +110,7 @@ class WorkbookFrame extends JFrame{
             			bookcase.removeWorkbook(selectedWorkbook);
             			
             			//delete workbook to database
-            			Database.removeFile(selectedWorkbook.getName());
+            			Database.removeFile(selectedWorkbook.path());
             			
             			//delete workbook to table
                         workbookModel.removeRow(selectedRow);
@@ -150,7 +150,7 @@ class WorkbookFrame extends JFrame{
             }
         });
         
-        frame.add(inputPanel, BorderLayout.NORTH);
+        frame.add(inputP, BorderLayout.NORTH);
         frame.add(new JScrollPane(workbookTable), BorderLayout.CENTER);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -161,8 +161,8 @@ class WorkbookFrame extends JFrame{
         
         if(!workbookList.isEmpty()) {
         	for(Workbook workbook : workbookList) {
-        		ArrayList<Problem> loadProblem = Database.loadProblemList(workbook.getName());
-        		Map<String, Tag> loadTag = Database.loadTagList(workbook.getName());
+        		ArrayList<Problem> loadProblem = Database.loadProblemList(workbook.path());
+        		Map<String, Tag> loadTag = Database.loadTagList(workbook.path());
         		workbook.setProblemList(loadProblem);
         		workbook.setTagList(loadTag);
         		workbookModel.addRow(new Object[] {workbook.getName(), String.valueOf(workbook.getProblemNum()), String.valueOf(workbook.getTagNum())});

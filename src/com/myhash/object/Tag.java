@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 public class Tag {
     private String name;
     private int num;

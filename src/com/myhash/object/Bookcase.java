@@ -1,4 +1,5 @@
 package com.myhash.object;
+
 import java.util.ArrayList;
 
 public class Bookcase {

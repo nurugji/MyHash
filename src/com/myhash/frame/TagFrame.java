@@ -1,5 +1,6 @@
 package com.myhash.frame;
 
+
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,10 +23,10 @@ import com.myhash.object.Workbook;
 
 //add edit button
 class TagFrame extends JFrame {
-	JPanel inputPanel;
+	JPanel inputP;
 	JLabel label;
-	JTextField textField;
-	JButton addButton, editButton, deleteButton;
+	JTextField nameTf;
+	JButton addBtn, editBtn, deleteBtn;
 	JTable tagTable;
     DefaultTableModel tagTableModel;
 
@@ -35,41 +36,41 @@ class TagFrame extends JFrame {
         
         initTable(workBook.getTagList());
 
-        inputPanel = new JPanel();
+        inputP = new JPanel();
         label = new JLabel("Tag name : ");
-        textField = new JTextField(10);
-        addButton = new JButton("ADD");
-        editButton = new JButton("EDIT");
-        deleteButton = new JButton("DELETE");
+        nameTf = new JTextField(10);
+        addBtn = new JButton("ADD");
+        editBtn = new JButton("EDIT");
+        deleteBtn = new JButton("DELETE");
         
-        inputPanel.add(label);
-        inputPanel.add(textField);
-        inputPanel.add(addButton);
-        inputPanel.add(editButton);
-        inputPanel.add(deleteButton);
+        inputP.add(label);
+        inputP.add(nameTf);
+        inputP.add(addBtn);
+        inputP.add(editBtn);
+        inputP.add(deleteBtn);
         
-        addButton.addActionListener(new ActionListener() {
+        addBtn.addActionListener(new ActionListener() {
             
         	@Override
             public void actionPerformed(ActionEvent e) {
-                String tagName = textField.getText();
+                String tagName = nameTf.getText();
                 if(tagName.equals("")) {
                 	JOptionPane.showMessageDialog(null, "Empty names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
                 }else if(workBook.getTagList().containsKey(tagName)){
                 	JOptionPane.showMessageDialog(null, "Duplicate names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
                 }else if(tagName.contains(" ")){
                 	JOptionPane.showMessageDialog(null, "Cannot contain spaces", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
-                	textField.setText("");
+                	nameTf.setText("");
                 }else {
                 	Tag newTag = new Tag(tagName);
                 	workBook.getTagList().put(newTag.getName(), newTag);
                     tagTableModel.addRow(new Object[]{newTag.getName(), newTag.getNum()});
-                    textField.setText("");
+                    nameTf.setText("");
                 }
             }
         });
         
-        editButton.addActionListener(new ActionListener() {
+        editBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -85,7 +86,7 @@ class TagFrame extends JFrame {
 	                    	JOptionPane.showMessageDialog(null, "Duplicate names are not allowed", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
 	                    }else if(result.contains(" ")){
 	                    	JOptionPane.showMessageDialog(null, "Cannot contain spaces", "CREATE ERROR", JOptionPane.ERROR_MESSAGE);
-	                    	textField.setText("");
+	                    	nameTf.setText("");
 	                    }else {
 	                    	Tag newTag = new Tag(result);
 	                    	newTag.setNum(selectedTag.getNum());
@@ -111,7 +112,7 @@ class TagFrame extends JFrame {
         	
         });
 
-        deleteButton.addActionListener(new ActionListener() {
+        deleteBtn.addActionListener(new ActionListener() {
             
         	@Override
             public void actionPerformed(ActionEvent e) {
@@ -136,11 +137,11 @@ class TagFrame extends JFrame {
             }
         });
 
-        add(inputPanel, BorderLayout.NORTH);
+        add(inputP, BorderLayout.NORTH);
         add(new JScrollPane(tagTable), BorderLayout.CENTER);
     }
     public void initTable(Map<String, Tag> tagList) {
-        tagTableModel = new DefaultTableModel(new Object[]{"태그 이름", "문제 개수"}, 0);
+        tagTableModel = new DefaultTableModel(new Object[]{"tag name", "problem num"}, 0);
         tagTable = new JTable(tagTableModel);
         
         if(!tagList.isEmpty()) {
@@ -148,6 +149,6 @@ class TagFrame extends JFrame {
         		tagTableModel.addRow(new Object[] {tagName, tagList.get(tagName).getNum()});
         	}
         }
-        Filter.sortTable(tagTable);
+        Filter.sortTagTable(tagTable);
     }
 }

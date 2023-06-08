@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,7 +21,7 @@ public class ImageHelper {
     public static Image resizeImg(BufferedImage image, int newWidth) {
  		int width = image.getWidth();
          int height = image.getHeight();
-         int newHeight = (int)(height * ((double)newWidth / width)); // 비율에 맞게 높이 조정
+         int newHeight = (int)(height * ((double)newWidth / width));
          
          Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH); 
 

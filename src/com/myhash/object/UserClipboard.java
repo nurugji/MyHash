@@ -1,5 +1,6 @@
 package com.myhash.object;
 
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -27,7 +28,7 @@ public class UserClipboard {
 	public static String clipboardSaveAsImgFile() {
     	File directory = new File(savePath);
         
-    	// 파일이 없는 경우에만 파일을 생성합니다.
+    	//make file
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
@@ -35,22 +36,21 @@ public class UserClipboard {
 		String fileName = null;
         if (clipboard.isDataFlavorAvailable(DataFlavor.imageFlavor)) {
             try {
-                // 이미지 데이터 가져오기
+                // bring img data
                 Image image = (Image) clipboard.getData(DataFlavor.imageFlavor);
 
-                // 이미지 파일 저장 경로와 파일 이름 지정
+                // img file path, name
                 String date = Now.dateTime();
                 fileName = "Clipboard"+date+".png";
                
-                // 새로운 파일 생성
+                // new img file
                 File file = new File(savePath + fileName);
 
-                // 이미지 파일로 저장
+                // save to img file
                 FileOutputStream fos = new FileOutputStream(file);
                 ImageIO.write(convertToBufferedImage(image), "png", fos);
                 fos.close();
 
-                // 저장 완료 메시지 표시
                 JOptionPane.showMessageDialog(null, "Image saved successfully.");
 
             } catch (UnsupportedFlavorException | IOException ex) {
